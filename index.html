@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Fábrica de Poções da Mana</title>
+    <style>
+:root {
+    --bg-color: #2b1d14; /* Um marrom escuro que combina com a estante */
+    --wood: #4a3020;
+    --cauldron: #333;
+}
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            height: -webkit-fill-available;
+        }
+        /* Topo: Placar e Pedido */
+#topo {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 10px; /* Reduzimos o topo, mas mantemos um pouco nas laterais */
+    height: 150px;
+        z-index: 12;               /* Acima do gato (11) para não ser coberto por ele */
+}
+
+#placar { 
+    font-size: 40px; 
+    color: #ffd700; 
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    /* O AJUSTE ESTÁ AQUI: Adicionei o 'px' que faltava */
+    /* Se quiser subir ainda mais, mude para -30px ou -40px */
+    margin-top: -25px; 
+        z-index: 12;               /* Acima do gato (11) para não ser coberto por ele */
+}
+
+#pontos {
+    font-size: 45px;    
+    z-index: 12;               /* Acima do gato (11) para não ser coberto por ele */
+
+}
+
+        .cliente-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #cliente-emoji { font-size: 70px;     filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+#topo {
+    display: flex;
+    justify-content: space-between;
+    padding: 2px 10px; /* Reduzimos o topo, mas mantemos um pouco nas laterais */
+    height: 150px;
+}
+
+#placar { 
+    font-size: 40px; 
+    color: #ffd700; 
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    
+    /* O AJUSTE ESTÁ AQUI: Adicionei o 'px' que faltava */
+    /* Se quiser subir ainda mais, mude para -30px ou -40px */
+    margin-top: -25px; 
+}
+
+#pontos {
+    font-size: 45px; 
+}
+
+}
+
+        #balao {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            min-width: 140px;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            color: black;
+            font-size: 35px; /* Aumentado aqui (Estrela/Erro) */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            flex-wrap: wrap;
+                filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+        }
+
+        /* AJUSTE DOS EMOJIS DENTRO DO BALÃO */
+        #receita-texto {
+            font-size: 20px; 
+            display: flex;
+            gap: 5px;
+                filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+        }
+
+        #balao::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 25px;
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent white transparent transparent;
+                filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+        }
+/* Centro: Caldeirão e Fogo - MOVIDOS PARA BAIXO */
+#centro {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end; /* Garante que fiquem na base do espaço disponível */
+    padding-bottom: 1px;       /* Distância mínima da borda da estante */
+    z-index: 12;               /* Acima do gato (11) para não ser coberto por ele */
+    margin-top: 160px;          /* Aumente este valor se quiser que ele desça ainda mais */
+}
+
+#caldeirao {
+    width: 150px;
+    height: 140px;
+    background: var(--cauldron);
+    border: 6px solid #222;
+    border-radius: 40% 40% 50% 50%;
+    position: relative; /* Mantido como base para a colher */
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    padding-bottom: 15px;
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.5);
+    z-index: 5; /* Garante que o corpo do caldeirão fique na frente do fogo */
+        filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+}
+
+#caldeirao::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    width: 170px;
+    height: 20px;
+    background: #222;
+    border-radius: 10px;
+    z-index: 10; /* A borda do caldeirão fica bem na frente */
+}
+
+/* REGRA DA COLHER (CABO PARA FORA) */
+.colher {
+    font-size: 160px; 
+    position: absolute;
+    /* Ajuste para o cabo sair pela borda superior */
+    top: -45px; 
+    left: 5px; 
+    
+    /* O SEGREDO PARA INVERTER: */
+    /* scaleY(-1) vira a colher de ponta cabeça */
+    /* rotate(15deg) dá a inclinação final */
+    transform: scaleY(-1) rotate(15deg);
+    
+    z-index: 1; 
+    pointer-events: none;
+        filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+
+    opacity: 0.9;
+}
+
+.item-no-caldeirao {
+    font-size: 40px;
+    margin-bottom: -5px;
+    animation: cair 0.3s ease-out;
+    position: relative; /* Necessário para o z-index funcionar */
+    z-index: 2; /* Fica na frente da colher */
+        filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+}
+
+        @keyframes cair {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #area-fogo {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 5px;
+            margin-top: -15px;
+                z-index: 6; /* Garante que o corpo do caldeirão fique na frente do fogo */
+
+        }
+
+        #fogo-principal {
+            font-size: 40px;
+            animation: balanco 0.5s infinite alternate;
+        }
+
+        .fogo-pequeno {
+            font-size: 24px;
+            opacity: 0.8;
+            animation: balanco 0.7s infinite alternate-reverse;
+        }
+
+        @keyframes balanco { 
+            from { transform: scale(0.9) translateY(0); } 
+            to { transform: scale(1.1) translateY(-5px); } 
+        }
+/* Base: Estante de Ingredientes - FINALIZADA */
+#estante {
+    background: var(--wood);
+    padding: 10px;
+    padding-bottom: 20px; /* Espaço para não cobrir os botões do Android */
+    border-top: 5px solid #2e1d13;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto; 
+    
+    height: 160px; 
+    min-height: 160px;
+    
+    z-index: 10;
+    margin-bottom: auto; /* Força a estante a ficar sempre colada no fundo */
+}
+
+/* Container para cada linha */
+.categoria-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.titulo-categoria {
+    font-size: 12px; /* Um pouco menor para ganhar espaço */
+    color: #ffd700;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.linha-ingredientes {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 5px;
+}
+
+.ingrediente {
+    min-width: 55px; /* Reduzi um pouco o tamanho */
+    height: 55px;
+    background: #6b442e;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    box-shadow: 0 4px 0 #3d271a;
+    cursor: pointer;
+}
+
+        .ingrediente:active { transform: translateY(4px); box-shadow: none; }
+  /* A animação em si */
+@keyframes pulinho {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) translateY(-15px); }
+}
+
+/* A "roupa" que ativa a animação */
+.animar-pulo {
+    animation: pulinho 0.4s ease;
+}
+
+/* Estilo base das bolhas */
+.bolha {
+    position: absolute;
+    bottom: 50px; /* Nasce dentro do caldeirão */
+    z-index: 4;    /* Atrás da borda, na frente do fundo */
+    pointer-events: none;
+    opacity: 0;
+    animation: subirEReviver 2s linear forwards;
+}
+
+/* Animação: Sobe, balança levemente e some */
+@keyframes subirEReviver {
+    0% {
+        transform: translateY(0) scale(0.5) translateX(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-120px) scale(0.8) translateX(var(--drift));
+        opacity: 0;
+    }
+}
+
+#fundo-parede {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Diminuímos o height de 25 para 15 para achatar as linhas */
+    /* Ajustamos o y para 12 para centralizar o emoji nesse espaço menor */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='25' height='15'><text style='opacity: 0.2' x='0' y='12' font-size='30'>🧱</text></svg>");
+    background-repeat: repeat;
+    background-color: var(--bg-color);
+    z-index: -1; 
+    pointer-events: none;
+}
+
+#chao {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    /* A altura do chão deve cobrir a área do fogo e da estante */
+    height: 250px; 
+    /* Um marrom que faz a transição entre a parede e a estante */
+    background: linear-gradient(to bottom, #3d2b1f, #2b1d14);
+    border-top: 4px solid #1a110a; /* Uma linha escura para marcar o fim da parede */
+    z-index: 0; /* Fica na frente da parede, mas atrás do fogo e caldeirão */
+}
+
+/* Ajuste importante para o Centro */
+#centro {
+    z-index: 5; /* Garante que o caldeirão e o fogo fiquem por cima do chão */
+}
+
+#janela {
+    position: fixed;
+    /* Posição no alto, mas um pouco pro lado */
+    top: 100px; 
+    left: 20px; 
+    
+    /* Um tamanho bom e proporcional à parede */
+    font-size: 150px; 
+    
+    /* CAMADAS: O z-index é 1. 
+       Isso é importante! Ela fica na FRENTE da parede (-1) e do chão (0),
+       mas ATRÁS das bolhas (4) e dos personagens (2). */
+    z-index: 1; 
+    pointer-events: none; /* Pra não clicar nela sem querer */
+    
+    /* Toque de mestre: Um efeito de "luz" suave saindo da janela */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+    opacity: 0.9;
+}
+
+#gatinho {
+    position: fixed;
+    bottom: 210px; 
+    /* Começa na direita */
+    left: calc(100vw - 100px); 
+    font-size: 100px; 
+    z-index: 3; /* Aumentado para garantir visibilidade */
+    pointer-events: none;
+    /* Adicione isso ao seu gatinho e vassoura para "ancorá-los" no chão */
+    filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+
+    /* Executa a animação 'passeio' de 10 segundos, para sempre */
+    animation: passeio 10s linear infinite;
+    filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.4));
+    
+    opacity: 1.0;
+}
+
+/* Animação CORRIGIDA para o gatinho andar DE FRENTE */
+@keyframes passeio {
+    0% { left: calc(100vw - 100px); transform: scaleX(1); } /* Começa na direita, olhando para a esquerda (frente) */
+    45% { transform: scaleX(1); } /* Mantém o olhar para frente */
+    50% { left: 20px; transform: scaleX(-1); } /* Chega na esquerda, VIRA para a direita (frente) */
+    95% { transform: scaleX(-1); } /* Mantém o olhar voltando */
+    100% { left: calc(100vw - 100px); transform: scaleX(1); } /* Volta ao início e VIRA para a esquerda */
+}
+
+#vassoura {
+    position: fixed;
+    /* Posição vertical: Alinhada com a parte de cima do chão */
+    bottom: 270px; /* Mesma altura que definimos para o 'height' do chão e bottom do gatinho */
+    /* Posição horizontal: Um pouco para a direita, perto do gatinho */
+    left: 30px; 
+    
+    /* Um tamanho grande, maior que o gatinho, proporcional a uma vassoura */
+    font-size: 180px; 
+    
+    /* CAMADAS: O z-index é 1. 
+       Isso é importante! Ela fica na FRENTE da parede (-1) e do chão (0),
+       na mesma profundidade da janela e do gatinho. */
+    z-index: 2; 
+    pointer-events: none; /* Pra não clicar nela sem querer */
+    
+    /* O SEGREDO: Dá a inclinação de vassoura encostada na parede */
+    /* rotate(-15deg) inclina um pouco para a esquerda. 
+       Ajuste o valor (ex: -10deg ou -20deg) se quiser mais ou menos inclinada. */
+    transform: rotate(-50deg);
+    
+    /* Garante que o ponto de rotação seja na base da vassoura, 
+       senão ela "vontaria" no ar ao girar. */
+    transform-origin: bottom center;
+    
+    /* Adiciona uma sombra suave para dar volume */
+    filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+
+    opacity: 1.0;
+}
+
+#prateleira-parede {
+    position: fixed;
+    /* Alinhado ao lado da janela */
+    top: 150px; 
+    right: 10px; 
+    
+    /* Largura da prateleira */
+    width: 150px;
+    
+    /* Cria a base de madeira da prateleira */
+    border-bottom: 8px solid #4a3020; 
+    padding-bottom: 1px;
+    
+    /* Alinha os itens em cima da prateleira */
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    
+    /* Camada 1: Atrás das bolhas, mas na frente da parede */
+    z-index: 1;
+    pointer-events: none;
+        filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+}
+
+#prateleira-parede span {
+    font-size: 30px; /* Tamanho dos itens na prateleira */
+    filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+}
+
+#frasco-entrega {
+    position: absolute;
+    top: -90px; /* Fica flutuando acima do caldeirão */
+    font-size: 70px;
+    z-index: 20;
+    opacity: 0; /* Começa invisível */
+    transition: all 0.3s ease;
+    pointer-events: none;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.5));
+}
+
+/* Classe que o JS vai ativar na vitória */
+.mostrar-frasco {
+    opacity: 1 !important;
+    transform: translateY(-20px) scale(1.2);
+}
+
+#aranha-container {
+    position: fixed;
+    top: 0;
+    /* Posição horizontal: Um pouco pra esquerda do placar de estrelas */
+    left: 80px; 
+    
+    /* A teia fininha */
+    width: 2px;
+    height: 10px; /* Começa curtinha */
+    background-color: #eee; /* Cor da teia */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5); /* Brilho leve */
+    
+    /* Camada 2: Atrás do placar e balão, mas na frente da parede e janela */
+    z-index: 2; 
+    pointer-events: none;
+    
+    /* Executa a animação 'sobe-desce' */
+    animation: sobeDesceAranha 8s ease-in-out infinite;
+}
+
+#aranha {
+    position: absolute;
+    bottom: -15px; /* Aranha na ponta da teia */
+    left: -14px; /* Centraliza a aranha no fio */
+    font-size: 25px; 
+    
+    /* O SEGREDO: Vira a aranha DE CABEÇA PARA BAIXO */
+    transform: scaleY(-1); 
+    
+    filter: drop-shadow(0 15px 5px rgba(0,0,0,0.3));
+}
+
+/* Animação que faz a teia 'esticar' e 'encolher' */
+@keyframes sobeDesceAranha {
+    0% { height: 10px; } /* Teia encolhida no teto */
+    40% { height: 250px; } /* Desce até a metade da tela (ajuste esse valor) */
+    60% { height: 250px; } /* Dá uma pausa lá embaixo */
+    100% { height: 10px; } /* Sobe de volta */
+}
+
+</style>
+</head>
+<body>
+<div id="fundo-parede"></div>
+<div id="chao"></div>
+<div id="janela">🪟</div>
+<div id="gatinho">🐈‍⬛</div>
+<div id="vassoura">🧹</div>
+<div id="prateleira-parede">
+    <span>🔮</span>
+    <span>📚</span>
+    <span>💀</span>
+</div>
+<div id="aranha-container">
+    <div id="aranha">🕷️</div>
+</div>
+
+    <div id="topo">
+        <div id="placar">⭐ <span id="pontos">0</span></div>
+        <div class="cliente-container">
+            <div id="cliente-emoji">🐱</div>
+            <div id="balao"><div id="receita-texto"></div></div>
+        </div>
+    </div>
+
+    <div id="centro">
+<div id="caldeirao">
+    <div class="colher">🥄</div>
+    <div id="frasco-entrega">🧪</div>
+</div>
+
+        <div id="area-fogo">
+            <div class="fogo-pequeno">🔥</div>
+            <div id="fogo-principal">🔥</div>
+            <div class="fogo-pequeno">🔥</div>
+        </div>
+    </div>
+
+    <div id="estante"></div>
+
+<script>
+  // Configuração do sintetizador de áudio
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function tocarSom(tipo) {
+    const oscillator = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+
+    const agora = audioCtx.currentTime;
+
+    if (tipo === 'splash') {
+        // Som de "água": frequência rápida caindo
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(400, agora);
+        oscillator.frequency.exponentialRampToValueAtTime(10, agora + 0.2);
+        gainNode.gain.setValueAtTime(0.3, agora);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, agora + 0.2);
+        oscillator.start();
+        oscillator.stop(agora + 0.2);
+    } 
+    else if (tipo === 'vitoria') {
+        // Som de "brilho": duas notas agudas subindo
+        oscillator.type = 'triangle';
+        oscillator.frequency.setValueAtTime(523, agora); // Dó
+        oscillator.frequency.setValueAtTime(659, agora + 0.1); // Mi
+        gainNode.gain.setValueAtTime(0.2, agora);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, agora + 0.4);
+        oscillator.start();
+        oscillator.stop(agora + 0.4);
+    } 
+    else if (tipo === 'erro') {
+        // Som de "erro": frequência baixa e vibrante
+        oscillator.type = 'sawtooth';
+        oscillator.frequency.setValueAtTime(150, agora);
+        oscillator.frequency.linearRampToValueAtTime(80, agora + 0.3);
+        gainNode.gain.setValueAtTime(0.1, agora);
+        gainNode.gain.linearRampToValueAtTime(0.01, agora + 0.3);
+        oscillator.start();
+        oscillator.stop(agora + 0.3);
+    }
+}
+    const estanteEl = document.getElementById('estante');
+        const caldeiraoEl = document.getElementById('caldeirao');
+        const receitaEl = document.getElementById('receita-texto');
+        const clienteEl = document.getElementById('cliente-emoji');
+        const pontosEl = document.getElementById('pontos');
+        const balaoEl = document.getElementById('balao');
+
+        const categorias = {
+            "1": ['🍎', '🍏', '🍊', '🍇', '🍉', '🍋', '🍌', '🍍', '🥭', '🍐', '🍑', '🍒', '🍓', '🥝', '🍈', '🍅', '🫒', '🥥', '🥑', '🫐'],
+            "2": ['🧄', '🥦', '🌶', '🧅', '🍆', '🥕', '🌽', '🫑', '🥒', '🥬', '🥜', '🌰', '🍄'],
+            "3": ['🦀', '🦞', '🦐', '🦑', '🦇', '🐁', '🦎', '🐍', '🐛', '🐝', '🪲', '🪳', '🦂', '🪰', '🪱', '🦋', '🐞', '🕷', '🐌'],
+            "4": ['🕸', '🍀', '💖', '💔', '⚡', '⭐', '🐽', '🐾', '🪶', '🩸', '💧', '🔥', '🧊', '🍭', '🥚', '🐚', '🌈', '💎'],
+            "5": ['🌸', '🌼', '🌹', '🌺', '🏵', '🌻', '🌷', '🌵', '🌿', '🍁', '🍃'],
+            "Final da lista": [],
+            "Desenvolvedor Aleks20x": [],
+            "✔": []
+        };
+
+        const ingredientes = [].concat(...Object.values(categorias));
+        const clientes = ['🐱', '👽', '🤖', '🤡', '💩', '🧟', '👻', '🧙‍♂️', '🧚‍♀️', '🧛‍♂️', '🧝‍♀️', '🥸', '🐵', '🐼', '🐶', '🦊', '🦝', '🐯', '🐨', '🐻‍❄️', '🐻', '🐰', '🦄', '🐸', '🤴', '👸', '👼', '👾', '👩🏼‍🎤', '🧜‍♀️', '🧞‍♂️', '🦸‍♂️', '🦸‍♀️', '👰‍♀️', '👮‍♀️', '🕵‍♀️', '👨‍🚀'];
+        let pontuacao = parseInt(localStorage.getItem('pontosMana')) || 0;
+        pontosEl.innerText = pontuacao;
+
+        let receitaAtual = [];
+        let caldeiraoConteudo = [];
+        let jogoBloqueado = false;
+
+        function montarEstante() {
+            estanteEl.innerHTML = ''; 
+            for (let nome in categorias) {
+                const container = document.createElement('div');
+                container.className = 'categoria-container';
+                const titulo = document.createElement('div');
+                titulo.className = 'titulo-categoria';
+                titulo.innerText = nome;
+                container.appendChild(titulo);
+                const linha = document.createElement('div');
+                linha.className = 'linha-ingredientes';
+                categorias[nome].forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'ingrediente';
+                    div.innerText = item;
+                    div.onclick = () => adicionarAoCaldeirao(item);
+                    linha.appendChild(div);
+                });
+                container.appendChild(linha);
+                estanteEl.appendChild(container);
+            }
+        }
+
+function novoPedido() {
+    jogoBloqueado = false;
+    caldeiraoConteudo = [];
+    
+    // Limpa os ingredientes visuais
+    const itens = caldeiraoEl.querySelectorAll('.item-no-caldeirao');
+    itens.forEach(i => i.remove());
+    
+    // GARANTA QUE O FRASCO SUMA AQUI TAMBÉM
+    document.getElementById('frasco-entrega').classList.remove('mostrar-frasco');
+
+    balaoEl.style.background = 'white';
+    clienteEl.innerText = clientes[Math.floor(Math.random() * clientes.length)];
+    
+    receitaAtual = [];
+    for(let i=0; i<4; i++) {
+        receitaAtual.push(ingredientes[Math.floor(Math.random() * ingredientes.length)]);
+    }
+    // Usamos innerHTML para os emojis aparecerem corretamente se houver formatação
+    receitaEl.innerText = receitaAtual.join(' ');
+}
+
+        function adicionarAoCaldeirao(item) {
+            if(jogoBloqueado) return;
+            const proximoCorreto = receitaAtual[caldeiraoConteudo.length];
+            if(item === proximoCorreto) {
+                tocarSom('splash');
+                caldeiraoConteudo.push(item);
+                const div = document.createElement('div');
+                div.className = 'item-no-caldeirao';
+                div.innerText = item;
+                caldeiraoEl.appendChild(div);
+                if(caldeiraoConteudo.length === 4) vitoria();
+            } else {
+                derrota();
+            }
+        }
+        
+        function fazerClientePular() {
+    clienteEl.classList.add('animar-pulo');
+    setTimeout(() => {
+        clienteEl.classList.remove('animar-pulo');
+    }, 400);
+}
+
+function vitoria() {
+    tocarSom('vitoria'); // <--- ADICIONE ESTA LINHA
+    jogoBloqueado = true;
+    // ... resto do seu código
+    fazerClientePular(); 
+    
+    // PEGA O FRASCO E MOSTRA
+    const frasco = document.getElementById('frasco-entrega');
+    frasco.classList.add('mostrar-frasco');
+    
+    pontuacao++;
+    pontosEl.innerText = pontuacao;
+    localStorage.setItem('pontosMana', pontuacao);
+    
+    receitaEl.innerText = '🤩';
+    balaoEl.style.background = '#e1ffdf';
+    
+    if (navigator.vibrate) navigator.vibrate(100);
+
+    // DEPOIS DE 1.5 SEGUNDOS (mesmo tempo da estrela), ESCONDE O FRASCO
+    setTimeout(() => {
+        frasco.classList.remove('mostrar-frasco');
+        novoPedido();
+    }, 1500);
+}
+
+    function derrota() {
+    tocarSom('erro'); // <--- ADICIONE ESTA LINHA
+    jogoBloqueado = true;
+    // ... resto do seu código
+        receitaEl.innerText = '😢';
+        balaoEl.style.background = '#ffdfdf';
+        setTimeout(novoPedido, 1500);
+    }
+    montarEstante();
+
+    novoPedido();
+    
+    const coresBolhas = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣', '🟤', '⚪', '⚫'];
+
+function criarBolha() {
+    const bolha = document.createElement('div');
+    bolha.className = 'bolha';
+    
+    // Escolhe uma cor aleatória da sua lista
+    bolha.innerText = coresBolhas[Math.floor(Math.random() * coresBolhas.length)];
+    
+    // Posição horizontal aleatória dentro do caldeirão
+    const xAleatorio = Math.random() * 100 - 50; // Varia entre -50px e 50px
+    bolha.style.left = `calc(50% + ${xAleatorio}px)`;
+    
+    // Variável CSS para a bolha subir meio "tortinha" (charme extra)
+    const deriva = (Math.random() * 40 - 20) + "px";
+    bolha.style.setProperty('--drift', deriva);
+
+    // Tamanho menor para equilibrar (como você sugeriu)
+    bolha.style.fontSize = "20px";
+
+    caldeiraoEl.appendChild(bolha);
+
+    // Remove do HTML depois que a animação acaba para não travar o celular
+    setTimeout(() => {
+        bolha.remove();
+    }, 2000);
+}
+
+// Cria uma bolha nova a cada 500ms (meio segundo)
+setInterval(criarBolha, 500);
+
+</script>
+</body>
+</html>
+
