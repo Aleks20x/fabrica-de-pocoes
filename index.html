@@ -11,17 +11,49 @@
     --cauldron: #333;
 }
 
-        body {
+        html, body {
+            width: 100%;
+            height: 100%;
             margin: 0;
+            overflow: hidden;
+        }
+        body {
             padding: 0;
             background-color: var(--bg-color);
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            height: 100vh;
+            height: 100dvh;
+        }
+
+        /* Área vertical fixa: proporção 9:16 (formato de Reels). */
+        #game-canvas {
+            position: relative;
+            flex: none;
+            width: min(90vw, 50.625vh);
+            height: min(90vh, 160vw);
+            aspect-ratio: 9 / 16;
             overflow: hidden;
+            background: var(--bg-color);
+            isolation: isolate;
+        }
+
+        /* O jogo mantém uma resolução interna única; só é escalado como um todo. */
+        #game-world {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 390px;
+            height: 693.333333px;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            height: -webkit-fill-available;
+            transform-origin: top left;
+            overflow: hidden;
+            will-change: transform;
         }
         /* Topo: Placar e Pedido */
 #topo {
@@ -311,11 +343,11 @@
 }
 
 #fundo-parede {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     /* Diminuímos o height de 25 para 15 para achatar as linhas */
     /* Ajustamos o y para 12 para centralizar o emoji nesse espaço menor */
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='25' height='15'><text style='opacity: 0.2' x='0' y='12' font-size='30'>🧱</text></svg>");
@@ -326,10 +358,10 @@
 }
 
 #chao {
-    position: fixed;
+    position: absolute;
     bottom: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     /* A altura do chão deve cobrir a área do fogo e da estante */
     height: 250px; 
     /* Um marrom que faz a transição entre a parede e a estante */
@@ -344,7 +376,7 @@
 }
 
 #janela {
-    position: fixed;
+    position: absolute;
     /* Posição no alto, mas um pouco pro lado */
     top: 100px; 
     left: 20px; 
@@ -364,10 +396,10 @@
 }
 
 #gatinho {
-    position: fixed;
+    position: absolute;
     bottom: 210px; 
     /* Começa na direita */
-    left: calc(100vw - 100px); 
+    left: 290px; 
     font-size: 100px; 
     z-index: 3; /* Aumentado para garantir visibilidade */
     pointer-events: none;
@@ -383,15 +415,15 @@
 
 /* Animação CORRIGIDA para o gatinho andar DE FRENTE */
 @keyframes passeio {
-    0% { left: calc(100vw - 100px); transform: scaleX(1); } /* Começa na direita, olhando para a esquerda (frente) */
+    0% { left: 290px; transform: scaleX(1); } /* Começa na direita, olhando para a esquerda (frente) */
     45% { transform: scaleX(1); } /* Mantém o olhar para frente */
     50% { left: 20px; transform: scaleX(-1); } /* Chega na esquerda, VIRA para a direita (frente) */
     95% { transform: scaleX(-1); } /* Mantém o olhar voltando */
-    100% { left: calc(100vw - 100px); transform: scaleX(1); } /* Volta ao início e VIRA para a esquerda */
+    100% { left: 290px; transform: scaleX(1); } /* Volta ao início e VIRA para a esquerda */
 }
 
 #vassoura {
-    position: fixed;
+    position: absolute;
     /* Posição vertical: Alinhada com a parte de cima do chão */
     bottom: 270px; /* Mesma altura que definimos para o 'height' do chão e bottom do gatinho */
     /* Posição horizontal: Um pouco para a direita, perto do gatinho */
@@ -422,7 +454,7 @@
 }
 
 #prateleira-parede {
-    position: fixed;
+    position: absolute;
     /* Alinhado ao lado da janela */
     top: 150px; 
     right: 10px; 
@@ -468,7 +500,7 @@
 }
 
 #aranha-container {
-    position: fixed;
+    position: absolute;
     top: 0;
     /* Posição horizontal: Um pouco pra esquerda do placar de estrelas */
     left: 80px; 
@@ -510,6 +542,8 @@
 </style>
 </head>
 <body>
+<div id="game-canvas">
+<div id="game-world">
 <div id="fundo-parede"></div>
 <div id="chao"></div>
 <div id="janela">🔲</div>
@@ -546,6 +580,9 @@
     </div>
 
     <div id="estante"></div>
+
+</div>
+</div>
 
 <script>
   // Configuração do sintetizador de áudio
@@ -755,6 +792,23 @@ function criarBolha() {
 // Cria uma bolha nova a cada 500ms (meio segundo)
 setInterval(criarBolha, 500);
 
+
+
+// Ajusta a escala do jogo inteiro sem alterar posições ou proporções internas.
+function ajustarCanvasVertical() {
+    const canvas = document.getElementById('game-canvas');
+    const mundo = document.getElementById('game-world');
+    if (!canvas || !mundo) return;
+    const area = canvas.getBoundingClientRect();
+    const escala = Math.min(
+        area.width / 390,
+        area.height / (390 * 16 / 9)
+    );
+    mundo.style.transform = `scale(${escala})`;
+}
+window.addEventListener('resize', ajustarCanvasVertical, { passive: true });
+window.addEventListener('orientationchange', ajustarCanvasVertical, { passive: true });
+ajustarCanvasVertical();
 </script>
 </body>
 </html>
